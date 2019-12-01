@@ -120,6 +120,8 @@ def foo():
     # return response
     return jsonify(data)
 
+# Cookie
+
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
