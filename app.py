@@ -1,4 +1,4 @@
-from flask import Flask, url_for
+from flask import Flask, url_for, request
 import click
 import config
 
@@ -11,8 +11,8 @@ def index():
     return "<h1>Hello World!</h1>"
 
 # 一个视图函数允许多个对应的URL
+@app.route('/hola')
 @app.route('/hi')
-@app.route('/hello')
 def sayHello():
     return "<h1>Hello, Flask!</h1>"
 
@@ -20,6 +20,18 @@ def sayHello():
 @app.route('/greet', defaults={'name':'Programmer'})
 @app.route('/greet/<name>')
 def greet(name):
+    return "<h1>Hello, %s!</h1>" % name
+
+# 获取URL请求中的查询字符串
+# 这种写法包含安全漏洞，要避免直接将用户传入的数据直接作为响应返回
+@app.route('/hello')
+def hello():
+    # 直接用key作为索引，如果没有对应的key，会返回HTTP 400(bad request)，而不是抛出KeyError异常
+    # name = request.args['name']
+    # werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+    # KeyError: 'name'
+    # 为了避免这个问题，应该用get方法代替，如果没有对应的value则返回None；第二个参数用来设置默认值，即如果name的值不存在，则将其返回
+    name = request.args.get('name', 'Flask')
     return "<h1>Hello, %s!</h1>" % name
 
 # url_for()获取URL
