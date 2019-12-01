@@ -14,7 +14,7 @@ def index():
 @app.route('/hola')
 @app.route('/hi')
 def sayHello():
-    return "<h1>Hello, Flask!</h1>"
+    return "<h1>Hola, Flask!</h1>"
 
 # defaults参数可以设置默认值
 @app.route('/greet', defaults={'name':'Programmer'})
