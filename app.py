@@ -1,4 +1,5 @@
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, redirect, abort, make_response, jsonify
+import json
 import click
 import config
 
@@ -61,6 +62,64 @@ def three_colors(color):
 def hello():
     """TEST COMMAND, just say 'Hello Human!'"""
     click.echo("Hello Human!")
+
+# 重定向
+@app.route('/redirect')
+def redirectToBaidu():
+    return redirect(url_for('sayHello'))
+    # return redirect('https://www.baidu.com')
+
+# 错误响应
+@app.route('/404')
+def not_found():
+    abort(404)
+
+# 响应格式
+@app.route('/foo')
+def foo():
+    # text/plain
+    # response = make_response(
+    #     'Note\n'
+    #     'to: Peter\n'
+    #     'from: Jane\n'
+    #     'heading: Reminder\n'
+    #     'body: Don\'t forget the party\n'
+    # )
+    # response.mimetype = 'text/plain'
+
+    # text/html
+    # response = make_response(
+    #     '<!DOCTYPE html>'
+    #     '<html>'
+    #     '<head></head>'
+    #     '<body>'
+    #        '<h1>Note</h1>'
+    #        '<p>to: Peter</p>'
+    #        '<p>from: Jane</p>'
+    #        '<p>heading: Reminder</p>'
+    #        '<p>body: <strong>Don\'t forget the party!</strong></p>'
+    #     '</body>'
+    #     '</html>'
+    # )
+    # response.mimetype = 'text/html'
+
+    # application/json
+    data = {
+        "note":{
+            "to": "Peter",
+            "from": "Jane",
+            "heading": "Reminder",
+            "body": "Don't forget the party!"
+        }
+    }
+
+    # Flask通过包装json的原生方法形成了一个jsonify()函数
+    # 通过该函数只需要传入数据或者参数，它就会对其进行序列化然后转换成JSON字符串作为响应主体，再生成响应对象并设置正确的MIME类型
+    # response = make_response(json.dumps(data))
+    # response.mimetype = 'application/json'
+    # return response
+    return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
