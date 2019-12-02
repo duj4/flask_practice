@@ -5,6 +5,8 @@ import config
 
 app = Flask(__name__)
 app.config.from_object(config)
+#secret_key也可以保存在.env中
+app.secret_key = app.config['SECRET_KEY']
 
 # 第一个视图函数
 @app.route('/')
@@ -32,7 +34,10 @@ def hello():
     # werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
     # KeyError: 'name'
     # 为了避免这个问题，应该用get方法代替，如果没有对应的value则返回None；第二个参数用来设置默认值，即如果name的值不存在，则将其返回
-    name = request.args.get('name', 'Flask')
+    # name = request.args.get('name', 'Flask')
+    name = request.args.get('name')
+    if name is None:
+        name = request.cookies.get('name', 'Human')
     return "<h1>Hello, %s!</h1>" % name
 
 # url_for()获取URL
@@ -121,7 +126,17 @@ def foo():
     return jsonify(data)
 
 # Cookie
+@app.route('/set/<name>')
+def set_cookie(name):
+    response = make_response(redirect((url_for('hello'))))
+    response.set_cookie('name', name)
 
+    return response
+
+# login
+@app.route('/login')
+def login():
+    pass
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
