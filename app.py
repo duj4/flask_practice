@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, redirect, abort, make_response, jsonify
+from flask import Flask, url_for, request, redirect, abort, make_response, jsonify,session
 import json
 import click
 import config
@@ -38,7 +38,16 @@ def hello():
     name = request.args.get('name')
     if name is None:
         name = request.cookies.get('name', 'Human')
-    return "<h1>Hello, %s!</h1>" % name
+        response = "<h1>Hello, %s!</h1>" % name
+
+    # 根据用户认证状态返回不同的内容
+    if 'logged_in' in session:
+        response += '[Authenticated]'
+    else:
+        response += '[Not Authenticated]'
+
+    # return "<h1>Hello, %s!</h1>" % name
+    return response
 
 # url_for()获取URL
 @app.route('/test_url_for')
@@ -133,10 +142,30 @@ def set_cookie(name):
 
     return response
 
-# login
+# 模拟认证
+# 默认情况下，session cookie会在用户关闭浏览器时删除
+# 通过犟session.permanent属性设为True可以将session的有效期延长为Flask.permanent_session_lifetime属性值对应的datetime.timedelta对象
+# 也可以通过配置变量PERMANENT_SESSION_LIFETIME设置，默认为31天
 @app.route('/login')
 def login():
-    pass
+    session['logged_in'] = True
+    return redirect(url_for('hello'))
+
+# 模拟后台
+@app.route('/admin')
+def admin():
+    if 'logged_in' not in session:
+        abort(403)
+
+    return 'Welcome to admin page.'
+
+# 登出用户
+@app.route('/logout')
+def logout():
+    if 'logged_in' in session:
+        session.pop('logged_in')
+
+    return redirect(url_for('hello'))
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
