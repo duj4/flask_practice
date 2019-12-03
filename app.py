@@ -83,14 +83,28 @@ def redirectToBaidu():
     return redirect(url_for('sayHello'))
     # return redirect('https://www.baidu.com')
 
+# 单击链依然返回到foo页面
+@app.route('/foo')
+def foo():
+    return '<h1>Foo Page</h1><a href="%s">Do Something</a>' % url_for("do_something")
+# 单击链依然返回到bar页面
+@app.route('/bar')
+def bar():
+    return '<h1>Bar Page</h1><a href="%s">Do Something</a>' % url_for("do_something")
+
+@app.route('/do_something')
+def do_something():
+    # do something
+    return redirect(url_for('hello'))
+
 # 错误响应
 @app.route('/404')
 def not_found():
     abort(404)
 
 # 响应格式
-@app.route('/foo')
-def foo():
+@app.route('/returnType')
+def returnType():
     # text/plain
     # response = make_response(
     #     'Note\n'
@@ -144,7 +158,7 @@ def set_cookie(name):
 
 # 模拟认证
 # 默认情况下，session cookie会在用户关闭浏览器时删除
-# 通过犟session.permanent属性设为True可以将session的有效期延长为Flask.permanent_session_lifetime属性值对应的datetime.timedelta对象
+# 通过将session.permanent属性设为True可以将session的有效期延长为Flask.permanent_session_lifetime属性值对应的datetime.timedelta对象
 # 也可以通过配置变量PERMANENT_SESSION_LIFETIME设置，默认为31天
 @app.route('/login')
 def login():
