@@ -79,23 +79,37 @@ def hello():
 
 # 重定向
 @app.route('/redirect')
-def redirectToBaidu():
+def redirectToSomewhere():
     return redirect(url_for('sayHello'))
     # return redirect('https://www.baidu.com')
 
 # 单击链依然返回到foo页面
+# 手动加入当前页面URL的查询参数next，next = request.full_path获取当前页面的完整路径
 @app.route('/foo')
 def foo():
-    return '<h1>Foo Page</h1><a href="%s">Do Something</a>' % url_for("do_something")
-# 单击链依然返回到bar页面
+    return '<h1>Foo Page</h1><a href="%s">Do Something and redirect</a>' % url_for("do_something", next=request.full_path)
+
 @app.route('/bar')
 def bar():
-    return '<h1>Bar Page</h1><a href="%s">Do Something</a>' % url_for("do_something")
+    return '<h1>Bar Page</h1><a href="%s">Do Something and redirect</a>' % url_for("do_something", next=request.full_path)
 
+# referrer是一个用来记录请求发源地址的HTTP首部字段(HTTP_REFERRER)
+# 当用户在某个站点单击链接，浏览器向新连接的服务器发起请求，请求的时间中包含的HTTP_REFERRER字段记录了用户所在的原站点URL
+# 将next和referrer结合到一起，写成重定向function如下:
+def redirect_back(default='hello', **kwargs):
+    for target in request.args.get('next'), request.referrer:
+        if target:
+            return redirect(target)
+
+    return redirect(url_for(default, **kwargs))
+
+#在do_something视图中，获取next值，然后重定向到对应的路径(若next为空，则重定向到hello视图)
 @app.route('/do_something')
 def do_something():
     # do something
-    return redirect(url_for('hello'))
+    # return redirect(url_for('hello'))
+    # return redirect(request.args.get('next', url_for('hello')))
+    return redirect_back()
 
 # 错误响应
 @app.route('/404')
