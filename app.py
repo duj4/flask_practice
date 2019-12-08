@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template
+from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template, Markup
 from urllib.parse import urlparse, urljoin
 from jinja2.utils import generate_lorem_ipsum
 import json
@@ -11,9 +11,9 @@ app.config.from_object(config)
 app.secret_key = app.config['SECRET_KEY']
 
 # 第一个视图函数
-@app.route('/')
-def index():
-    return "<h1>Hello World!</h1>"
+# @app.route('/')
+# def index():
+#     return "<h1>Hello World!</h1>"
 
 # 一个视图函数允许多个对应的URL
 @app.route('/hola')
@@ -88,8 +88,8 @@ def redirectToSomewhere():
 # 单击链依然返回到foo页面
 # 手动加入当前页面URL的查询参数next，next = request.full_path获取当前页面的完整路径
 @app.route('/foo')
-def foo():
-    return '<h1>Foo Page</h1><a href="%s">Do Something and redirect</a>' % url_for("do_something", next=request.full_path)
+# def foo():
+#     return '<h1>Foo Page</h1><a href="%s">Do Something and redirect</a>' % url_for("do_something", next=request.full_path)
 
 @app.route('/bar')
 def bar():
@@ -238,7 +238,7 @@ def logout():
 
     return redirect(url_for('hello'))
 
-#chapter 3-template
+#chapter 3-template=======================================================================================
 user = {
     'username': 'Grey Li',
     'bio': 'A boy who loves movies and music.'
@@ -259,6 +259,39 @@ movies = [
 @app.route('/watchlist')
 def watchlist():
     return render_template('watchlist.html', user=user, movies=movies)
+
+# 注册模板全局函数
+@app.template_global()
+def bar():
+    return 'I am bar.'
+foo = 'I am foo.'
+# 添加自定义全局对象
+# 全局对象是指在所有的模板中都可以直接使用的对象，包括在模板中导入的模板
+# 和注册模板全局函数不同，直接操作globals字典允许传入任意python对象，而不仅仅是函数，类似于上下文处理
+# 下面代码即向模板中添加全局函数bar和foo
+app.jinja_env.globals['bar'] = bar
+app.jinja_env.globals['foo'] = foo
+
+# 注册自定义过滤器
+# musical过滤器会在被国旅的变量字符后添加一个音符图标，即s是被传入/被过滤的字符
+@app.template_filter()
+def musical(s):
+    return s + Markup('&#9835;')
+# 向模板中添加过滤器
+app.jinja_env.filters['musical'] = musical
+
+# 注册自定义测试器
+@app.template_test()
+def baz(n):
+    if n == 'baz':
+        return True
+    return False
+# 向模板中添加测试其
+app.jinja_env.tests['baz'] = baz
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
