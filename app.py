@@ -1,4 +1,5 @@
-from flask import Flask, url_for, request, redirect, abort, make_response, jsonify,session
+from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session
+from urllib.parse import urlparse, urljoin
 import json
 import click
 import config
@@ -93,14 +94,28 @@ def foo():
 def bar():
     return '<h1>Bar Page</h1><a href="%s">Do Something and redirect</a>' % url_for("do_something", next=request.full_path)
 
+# 验证URL安全性
+def is_safe_url(target):
+    # request.host_url获取程序内的主机URL
+    # target: /foo?
+    # request.host_url: http://192.168.0.103:5000/
+    ref_url = urlparse(request.host_url)
+    # ref_url: ParseResult(scheme='http', netloc='192.168.0.103:5000', path='/', params='', query='', fragment='')
+
+    # urljoin用来将目标URL转换为绝对URL
+    test_url = urlparse(urljoin(request.host_url, target))
+    # test_url: ParseResult(scheme='http', netloc='192.168.0.103:5000', path='/foo', params='', query='', fragment='')
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
 # referrer是一个用来记录请求发源地址的HTTP首部字段(HTTP_REFERRER)
 # 当用户在某个站点单击链接，浏览器向新连接的服务器发起请求，请求的时间中包含的HTTP_REFERRER字段记录了用户所在的原站点URL
 # 将next和referrer结合到一起，写成重定向function如下:
 def redirect_back(default='hello', **kwargs):
     for target in request.args.get('next'), request.referrer:
-        if target:
+        if not target:
+            continue
+        if is_safe_url(target):
             return redirect(target)
-
     return redirect(url_for(default, **kwargs))
 
 #在do_something视图中，获取next值，然后重定向到对应的路径(若next为空，则重定向到hello视图)
