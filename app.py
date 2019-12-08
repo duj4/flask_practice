@@ -40,7 +40,7 @@ def hello():
     name = request.args.get('name')
     if name is None:
         name = request.cookies.get('name', 'Human')
-        response = "<h1>Hello, %s!</h1>" % name
+    response = "<h1>Hello, %s!</h1>" % name
 
     # 根据用户认证状态返回不同的内容
     if 'logged_in' in session:
