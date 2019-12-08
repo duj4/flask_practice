@@ -1,5 +1,6 @@
 from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session
 from urllib.parse import urlparse, urljoin
+from jinja2.utils import generate_lorem_ipsum
 import json
 import click
 import config
@@ -125,6 +126,33 @@ def do_something():
     # return redirect(url_for('hello'))
     # return redirect(request.args.get('next', url_for('hello')))
     return redirect_back()
+
+# AJAX异步请求
+@app.route('/post')
+def show_post():
+    post_body = generate_lorem_ipsum(n = 2)
+    return """
+    <h1>A very long post</h1>
+    <div class="body">%s</div>
+    <button id="load">Load More</button>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        $('#load').click(function() {
+            $.ajax({
+                url: '/more',
+                type: 'get',
+                success: function(data){
+                    $('.body').append(data);
+                }
+            })
+        })
+    })
+    </script>""" % post_body
+# 接上面，点击“load more”时，会执行事件回调函数，通过url将目标URL设置为/more，并通过append方法将返回的数据append到body底部
+@app.route('/more')
+def load_post():
+    return generate_lorem_ipsum(n=1)
 
 # 错误响应
 @app.route('/404')
