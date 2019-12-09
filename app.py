@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template, Markup
+from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template, Markup, flash
 from urllib.parse import urlparse, urljoin
 from jinja2.utils import generate_lorem_ipsum
 import json
@@ -159,6 +159,10 @@ def load_post():
 def not_found():
     abort(404)
 
+@app.route('/500')
+def internalServerError():
+    abort(500)
+
 # 响应格式
 @app.route('/returnType')
 def returnType():
@@ -272,6 +276,12 @@ foo = 'I am foo.'
 app.jinja_env.globals['bar'] = bar
 app.jinja_env.globals['foo'] = foo
 
+# 通过模板环境对象删除jinja2语句导致的HTML代码空白
+# 宏内的空白控制不受trim_blocks和lstrip_blocks属性控制
+app.jinja_env.trim_blocks = True # 删除Jinja2语句后的第一个空行，仅针对{%……%}中的代码块
+app.jinja_env.lstrip_blocks = True # 删除Jinja2语句所在行之前的空格和制表符
+
+
 # 注册自定义过滤器
 # musical过滤器会在被国旅的变量字符后添加一个音符图标，即s是被传入/被过滤的字符
 @app.template_filter()
@@ -286,8 +296,41 @@ def baz(n):
     if n == 'baz':
         return True
     return False
-# 向模板中添加测试其
+# 向模板中添加测试器
 app.jinja_env.tests['baz'] = baz
+
+# 使用flash函数“闪现”消息
+# 如果flash消息中包含中文，在Python2.x中，那么需要在字符串前添加u前缀，告诉Python把这个字符串编码成Unicode字符串
+# 还需要在Python文件的首行添加编码声明“#-*- coding: utf-8 -*-”,这会让Python使用UTF-8来解码字符串
+# Python3则不需要，因为默认就是Unicode编码
+@app.route('/flash')
+def just_flash():
+    flash('我是闪电，谁找我?')
+    return redirect(url_for('index'))
+
+# 错误处理函数
+# 错误处理函数需要附加app.errorhandler()装饰器，并传入错误状态码作为参数
+# 错误处理函数本身需要接受异常类作为参数，并在返回值中注明对应的HTTP状态码。当发生错误时，对应的错误处理函数会被调用，它的返回值会作为错误响应的主体
+
+
+# 404 error handler
+@app.errorhandler(404)
+def page_not_found(e):
+    # 内置的异常对象提供了以下参数：
+    print(e.code) # code: 状态码
+    print(e.name) # name: 原因短语
+    print(e.description) # description: 错误描述，另外使用get_description()方法还可以获取HTML格式的错误描述代码
+    print(e.get_description())
+    return render_template('errors/404.html'), 404
+
+# 500 error handler
+@app.errorhandler(500)
+def internal_server_error(e):
+    print(e.code)  # code: 状态码
+    print(e.name)  # name: 原因短语
+    print(e.description)  # description: 错误描述，另外使用get_description()方法还可以获取HTML格式的错误描述代码
+    print(e.get_description())
+    return render_template('errors/500.html'), 500
 
 @app.route('/')
 def index():

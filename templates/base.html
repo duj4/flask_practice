@@ -4,7 +4,10 @@
     {% block head%}
         <meta charset="UTF-8">
         <title>{% block title %}Template - HelloFlask{% endblock %}</title>
-        {% block styles %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        {% block styles %}
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        {% endblock %}
     {% endblock %}
 </head>
 <body>
@@ -14,8 +17,12 @@
         </ul>
     </nav>
     <main>
+        {% for message in get_flashed_messages() %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
         {% block content %}{% endblock %}
     </main>
+    <!--在Jinja2语句中添加-可以去掉HTML代码中该语句前后的空白-->
     <footer>
         {% block footer %}
             <p>this is footer</p>

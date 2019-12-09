@@ -1,8 +1,18 @@
 <component name="ProjectDictionaryState">
   <dictionary name="duj4">
     <words>
+      <w>elif</w>
+      <w>endblock</w>
+      <w>endfor</w>
+      <w>endmacro</w>
+      <w>errorhandler</w>
       <w>goback</w>
+      <w>gump</w>
+      <w>jinja</w>
+      <w>lstrip</w>
       <w>mimetype</w>
+      <w>quxs</w>
+      <w>totoro</w>
       <w>werkzeug</w>
     </words>
   </dictionary>
