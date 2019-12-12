@@ -2,23 +2,29 @@
 <html lang="en">
 <head>
     {% block head%}
-        <meta charset="UTF-8">
+        {% block metas %}
+            <meta charset="UTF-8">
+        {% endblock metas%}
         <title>{% block title %}Template - HelloFlask{% endblock %}</title>
         <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
         {% block styles %}
             <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-        {% endblock %}
-    {% endblock %}
+        {% endblock styles %}
+    {% endblock  head %}
 </head>
 <body>
     <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Home</a></li>
-        </ul>
+        {% block nav %}
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+            </ul>
+        {% endblock %}
     </nav>
     <main>
         {% for message in get_flashed_messages() %}
-            <div class="alert">{{ message }}</div>
+            <div class="alert">
+                {{ message }}
+            </div>
         {% endfor %}
         {% block content %}{% endblock %}
     </main>

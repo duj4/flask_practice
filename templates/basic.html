@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Basic Form</h2>
+    <form method="post">
+        {{ form.csrf_token }} <!-- 渲染CSRF令牌的隐藏字段 -->
+        {{ form.username.label }} <br>{{ form.username }} <br>
+        {{ form.password.label }} <br>{{ form.password }} <br>
+        {{ form.remember }} {{ form.remember.label }} <br>
+        {{ form.submit }} <br>
+    </form>
+{% endblock %}

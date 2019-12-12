@@ -4,10 +4,12 @@ from jinja2.utils import generate_lorem_ipsum
 import json
 import click
 import config
+from forms import LoginForm
 
 app = Flask(__name__)
 app.config.from_object(config)
 #secret_key也可以保存在.env中
+# Flask-WTF默认为每个表单启用CSRF保护，会自动为我们生成和验证CSRF令牌， 默认情况下它会使用程序密钥来对CSRF令牌进行签名，所以需要设置密钥
 app.secret_key = app.config['SECRET_KEY']
 
 # 第一个视图函数
@@ -75,7 +77,7 @@ def three_colors(color):
 
 # 创建自定义命令
 @app.cli.command()
-def hello():
+def sayHello():
     """TEST COMMAND, just say 'Hello Human!'"""
     click.echo("Hello Human!")
 
@@ -242,7 +244,7 @@ def logout():
 
     return redirect(url_for('hello'))
 
-#chapter 3-template=======================================================================================
+# chapter 3-template=======================================================================================
 user = {
     'username': 'Grey Li',
     'bio': 'A boy who loves movies and music.'
@@ -335,6 +337,12 @@ def internal_server_error(e):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# chapter 4-form=========================================================================================
+@app.route('/basic')
+def basic():
+    form = LoginForm()
+    return render_template('basic.html', form = form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
