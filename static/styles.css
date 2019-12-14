@@ -51,3 +51,7 @@ footer {
   background-color: #cce5ff;
   border-color: #b8daff;
 }
+
+.error {
+    color: red;
+}

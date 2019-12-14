@@ -313,8 +313,6 @@ def just_flash():
 # 错误处理函数
 # 错误处理函数需要附加app.errorhandler()装饰器，并传入错误状态码作为参数
 # 错误处理函数本身需要接受异常类作为参数，并在返回值中注明对应的HTTP状态码。当发生错误时，对应的错误处理函数会被调用，它的返回值会作为错误响应的主体
-
-
 # 404 error handler
 @app.errorhandler(404)
 def page_not_found(e):
@@ -339,9 +337,19 @@ def index():
     return render_template('index.html')
 
 # chapter 4-form=========================================================================================
-@app.route('/basic')
+# Flask为路由设置默认监听的HTTP方法为GET，为了支持接收表单提交发送的POST请求，必须在装饰器里使用methods关键字为路由指定POST方法
+@app.route('/basic', methods=['GET', 'POST'])
 def basic():
     form = LoginForm()
+    # validate_on_submit()合并了request.POST方法检查和form.validate()验证
+    # PUT、PATCH和DELETE方法也可以使用该方法
+    if form.validate_on_submit():
+        username = form.username.data #表单类的data属性是一个匹配所有字段与对应数据的字典
+        flash('Welcome home, %s!' % username)
+        # 当刷新页面时，浏览器的默认行为是发送上一个请求，如果上一个请求是POST，那么就会弹出一个确认窗口，询问客户是否再次提交
+        # 尽量避免提交表单的POST作为最后一个请求，所以在这里return一个重定向响应，让浏览器重新发送一个GET请求到目标URL
+        # 这种用来防止重复提交表单的技术称为PRG(Post/Redirect/Get)模式
+        return redirect(url_for('index'))
     return render_template('basic.html', form = form)
 
 if __name__ == '__main__':

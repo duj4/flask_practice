@@ -3,10 +3,23 @@
 {% block content %}
     <h2>Basic Form</h2>
     <form method="post">
+        <!--在HTML中，当<form>标签声明的表单中类型为submit的提交字段被单击时，就会创建一个提交表单的HTTP请求，请求中包含表单各个字段的数据-->
+        <!--表单的提交行为主要由三个属性控制:-->
+            <!--action: 默认为当前URL，也就是渲染该模板的路由所在的URL-->
+            <!--method: 默认为GET方法，表单的数据会以查询字符串的形式附加在请求的URL里，但是会包含敏感信息-->
+            <!--enctype: 表单数据的编码类型-->
         <!-- 渲染CSRF令牌的隐藏字段 -->
         {{ form.csrf_token }}
-        {{ form.username.label }} <br>{{ form.username }} <br>
-        {{ form.password.label }} <br>{{ form.password }} <br>
+        {{ form.username.label }} <br>
+        {{ form.username }} <br>
+        {% for message in form.username.errors %}
+            <small class="error">{{ message }}</small><br>
+        {% endfor %}
+        {{ form.password.label }} <br>
+        {{ form.password }} <br>
+        {% for message in form.password.errors %}
+            <small class="error">{{ message }}</small><br>
+        {% endfor %}
         {{ form.remember }} {{ form.remember.label }} <br>
         {{ form.submit }} <br>
     </form>
