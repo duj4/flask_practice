@@ -4,7 +4,7 @@ from jinja2.utils import generate_lorem_ipsum
 import json
 import click
 import config
-from forms import LoginForm
+from forms import LoginForm, FortyTwoForm
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -344,13 +344,22 @@ def basic():
     # validate_on_submit()合并了request.POST方法检查和form.validate()验证
     # PUT、PATCH和DELETE方法也可以使用该方法
     if form.validate_on_submit():
-        username = form.username.data #表单类的data属性是一个匹配所有字段与对应数据的字典
+        username = form.username.data # 表单类的data属性是一个匹配所有字段与对应数据的字典
         flash('Welcome home, %s!' % username)
         # 当刷新页面时，浏览器的默认行为是发送上一个请求，如果上一个请求是POST，那么就会弹出一个确认窗口，询问客户是否再次提交
         # 尽量避免提交表单的POST作为最后一个请求，所以在这里return一个重定向响应，让浏览器重新发送一个GET请求到目标URL
         # 这种用来防止重复提交表单的技术称为PRG(Post/Redirect/Get)模式
         return redirect(url_for('index'))
     return render_template('basic.html', form = form)
+
+@app.route('/custom-validator', methods=['GET', 'POST'])
+def custom_validator():
+    form = FortyTwoForm()
+
+    if form.validate_on_submit():
+        flash('Bingo!')
+        return redirect(url_for('index'))
+    return render_template('custom_validator.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
