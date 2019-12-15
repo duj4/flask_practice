@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form_field %}
+
+{% block content %}
+    <h2>File Upload</h2>
+    <!--当表单中包含文件上传字段时，需要将表单的enctype属性设置为multipart/form-data
+        这会告诉浏览器将上传数据发送到服务器，否则仅会把文件名作为表单数据提交-->
+    <form method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        {{ form_field(form.photo) }}
+        {{ form.submit }}
+    </form>
+{% endblock %}

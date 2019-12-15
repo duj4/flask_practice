@@ -4,7 +4,7 @@ from jinja2.utils import generate_lorem_ipsum
 import json
 import click
 import config
-from forms import LoginForm, FortyTwoForm
+from forms import LoginForm, FortyTwoForm, UploadForm
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -360,6 +360,11 @@ def custom_validator():
         flash('Bingo!')
         return redirect(url_for('index'))
     return render_template('custom_validator.html', form=form)
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm()
+    return render_template('upload.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],

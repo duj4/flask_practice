@@ -2,6 +2,7 @@
 # 当使用Flask-WTF定义表单时，仍然使用WTForms提供的字段和验证器，创建的方式也完全相同，只不过表单类要继承Flask-WTF提供的FlaskForm类，以便与Flask集成
 # Flask-WTF会自动在实例化表单类时添加一个包含CSRF令牌值的隐藏字段csrf_token
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import Form, StringField, PasswordField, BooleanField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, Length, ValidationError
 
@@ -21,3 +22,9 @@ class FortyTwoForm(FlaskForm):
         if field.data != 42:
             raise ValidationError('Must be 42!')
 
+# 使用Flask-WTF的FileField类，它继承了WTForms提供的上传字段FileField，添加了对Flask的集成
+class UploadForm(FlaskForm):
+    # FileRequired()确保提交的表单字段中包含文件数据
+    # FileAllowed()设置允许的文件类型，传入一个包含允许文件类型的后缀名列表
+    photo = FileField('Upload Image', validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png', 'gif'])])
+    submit = SubmitField()
