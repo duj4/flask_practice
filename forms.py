@@ -3,7 +3,7 @@
 # Flask-WTF会自动在实例化表单类时添加一个包含CSRF令牌值的隐藏字段csrf_token
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import Form, StringField, PasswordField, BooleanField, IntegerField, SubmitField
+from wtforms import Form, StringField, PasswordField, BooleanField, IntegerField, SubmitField, MultipleFileField
 from wtforms.validators import DataRequired, Length, ValidationError
 
 class LoginForm(FlaskForm):
@@ -27,4 +27,9 @@ class UploadForm(FlaskForm):
     # FileRequired()确保提交的表单字段中包含文件数据
     # FileAllowed()设置允许的文件类型，传入一个包含允许文件类型的后缀名列表
     photo = FileField('Upload Image', validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png', 'gif'])])
+    submit = SubmitField()
+
+# 多文件上传可以直接使用WTForms提供的MultipleFileField字段
+class MultiUploadForm(FlaskForm):
+    photo = MultipleFileField('Upload Image', validators={DataRequired()})
     submit = SubmitField()

@@ -1,10 +1,13 @@
-from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template, Markup, flash
+from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template, Markup, flash, send_from_directory
+from flask_wtf.csrf import validate_csrf
 from urllib.parse import urlparse, urljoin
 from jinja2.utils import generate_lorem_ipsum
+import os
+import uuid
 import json
 import click
 import config
-from forms import LoginForm, FortyTwoForm, UploadForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -361,9 +364,77 @@ def custom_validator():
         return redirect(url_for('index'))
     return render_template('custom_validator.html', form=form)
 
+# 为了让上传后的文件能够通过URL获取，创建以下视图函数返回上传后的文件
+@app.route('/uploads/<path:filename>')
+def get_file(filename):
+    return send_from_directory(app.config['UPLOAD_PATH'], filename)
+
+# 显示已上传的文件
+@app.route('/uploaded-images')
+def show_images():
+    return render_template('uploaded.html')
+
+# 对上传文件重命名
+# 如果能够确定文件的来源安全，可以直接使用原文件名f.filename
+# 考虑到恶意用户在文件名中加入表示上级目录的..(/../../../home/username/.bashrc或../../../etc/passwd)j进而对系统文件进行篡改或执行恶意脚本，需要对文件名进行安全处理
+# from werkzeug import secure_filename, secure_filename()可以过滤掉危险字符，但是对非ASCII字符组成的文件名只能返回空值
+# 避免上述情况出现，使用下述办法对文件名进行随机处理
+def random_filename(filename):
+    ext = os.path.splitext(filename)[1]
+    new_filename = uuid.uuid4().hex + ext
+    return new_filename
+
+# FileAllowed验证器，返回bool值
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+# 上传文件
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm()
+    if form.validate_on_submit():
+        # 上传的文件会被Flask解析为Werkzeug的FileStorage对象，使用Flask-WTF时，它会自动帮我们获取对应的文件对象
+        f = form.photo.data
+        filename = random_filename(f.filename)
+        f.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        flash('Upload success!')
+        session['filenames'] = [filename]
+        return redirect(url_for('show_images'))
+    return render_template('upload.html', form=form)
+
+# 多文件上传
+# 由于Flask-WTF当前版本0.14.2中并未添加对多文件上传的渲染和验证支持，所以需要在视图函数中手动获取文件并进行验证
+@app.route('/multi-upload', methods=['GET', 'POST'])
+def multi_upload():
+    form = MultiUploadForm()
+    if request.method == 'POST':
+        filenames = []
+        # 验证CSRF令牌
+        try:
+            validate_csrf(form.csrf_token.data)
+        except:
+            flash('CSRF token error.')
+            return redirect(url_for('multi_upload'))
+        # 检查文件是否存在
+        # 如果用户没有选择文件就提交表单则request.files为空，相当于FileRequired验证器
+        if 'photo' not in request.files:
+            flash('This field is required.')
+            return redirect(url_for('multi_upload'))
+
+        # 传入字段的name属性值会返回包含所有上传文件对象的列表
+        for f in request.files.getlist('photo'):
+            # 检查文件类型
+            # 相当于FileAllowed验证器
+            if f and allowed_file(f.filename):
+                filename = random_filename(f.filename)
+                f.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+                filenames.append(filename)
+            else:
+                flash('Invalid file type.')
+                return redirect(url_for('multi_upload'))
+        flash('Upload success!')
+        session['filenames'] = filenames
+        return redirect(url_for('show_images'))
     return render_template('upload.html', form=form)
 
 if __name__ == '__main__':
