@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form_field %}
+
+{% block content %}
+    <h1>Integrate CKEditor with Flask-CKEditor</h1>
+    <form method="post">
+        {{ form.csrf_token}}
+        {{ form_field(form.title) }}
+        {{ form_field(form.body) }}
+        {{ form.submit }}
+    </form>
+{% endblock%}
+
+<!--渲染CKEditor编辑器需要加载相应的JS脚本，方便开发，这里使用内置的ckeditor.load()方法加载资源，默认从CDN加载
+    将CKEDITOR_SERVE_LOCAL设为True会使用扩展内置的本地资源-->
+
+{% block scripts %}
+    {{ super() }}
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name='body') }}
+{% endblock %}

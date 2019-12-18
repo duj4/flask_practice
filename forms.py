@@ -5,6 +5,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import Form, StringField, PasswordField, BooleanField, IntegerField, SubmitField, MultipleFileField
 from wtforms.validators import DataRequired, Length, ValidationError
+from flask_ckeditor import CKEditorField
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -31,5 +32,12 @@ class UploadForm(FlaskForm):
 
 # 多文件上传可以直接使用WTForms提供的MultipleFileField字段
 class MultiUploadForm(FlaskForm):
-    photo = MultipleFileField('Upload Image', validators={DataRequired()})
+    photo = MultipleFileField('Upload Image', validators=[DataRequired()])
     submit = SubmitField()
+
+# 富文本编辑器在HTML中通过文本区域字段表示，即<textarea></textarea>
+# Flask-CKEditor通过包装WTForms提供的TextAreaField字段类型实现了一个CKEditorField字段类
+class RichTextForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(), Length(1,50)])
+    body = CKEditorField('Body', validators=[DataRequired()])
+    submit = SubmitField('Publish')

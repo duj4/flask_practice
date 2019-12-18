@@ -1,5 +1,6 @@
 from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template, Markup, flash, send_from_directory
 from flask_wtf.csrf import validate_csrf
+from flask_ckeditor import CKEditor, upload_success, upload_fail
 from urllib.parse import urlparse, urljoin
 from jinja2.utils import generate_lorem_ipsum
 import os
@@ -7,13 +8,16 @@ import uuid
 import json
 import click
 import config
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm
 
 app = Flask(__name__)
 app.config.from_object(config)
 #secret_key也可以保存在.env中
 # Flask-WTF默认为每个表单启用CSRF保护，会自动为我们生成和验证CSRF令牌， 默认情况下它会使用程序密钥来对CSRF令牌进行签名，所以需要设置密钥
 app.secret_key = app.config['SECRET_KEY']
+
+# 实例化Flask-CKEditor提供的CKEditor类
+ckeditor = CKEditor(app)
 
 # 第一个视图函数
 # @app.route('/')
@@ -436,6 +440,14 @@ def multi_upload():
         session['filenames'] = filenames
         return redirect(url_for('show_images'))
     return render_template('upload.html', form=form)
+@app.route('/ckeditor', methods=['GET', 'POST'])
+def ckeditor():
+    form = RichTextForm()
+    if form.validate_on_submit():
+        pass
+    return render_template('ckeditor.html', form=form)
+
+
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
