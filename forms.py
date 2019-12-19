@@ -3,7 +3,7 @@
 # Flask-WTF会自动在实例化表单类时添加一个包含CSRF令牌值的隐藏字段csrf_token
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import Form, StringField, PasswordField, BooleanField, IntegerField, SubmitField, MultipleFileField
+from wtforms import Form, StringField, PasswordField, BooleanField, IntegerField, SubmitField, MultipleFileField, TextAreaField
 from wtforms.validators import DataRequired, Length, ValidationError
 from flask_ckeditor import CKEditorField
 
@@ -41,3 +41,10 @@ class RichTextForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(1,50)])
     body = CKEditorField('Body', validators=[DataRequired()])
     submit = SubmitField('Publish')
+
+# 包含两个提交按钮的表单
+class NewPostForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired(), Length(1,50)])
+    body = TextAreaField('Body', validators=[DataRequired()])
+    save = SubmitField('Save') # 保存按钮
+    publish = SubmitField('Publish') # 提交按钮

@@ -8,7 +8,7 @@ import uuid
 import json
 import click
 import config
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -440,6 +440,8 @@ def multi_upload():
         session['filenames'] = filenames
         return redirect(url_for('show_images'))
     return render_template('upload.html', form=form)
+
+# ckeditor界面，目前支持get
 @app.route('/ckeditor', methods=['GET', 'POST'])
 def ckeditor():
     form = RichTextForm()
@@ -447,7 +449,22 @@ def ckeditor():
         pass
     return render_template('ckeditor.html', form=form)
 
-
+# two-submits
+# 当表单数据通过POST请求提交时，Flask会把表单数据解析到request.form字典
+# 如果表单中有两个提交字段，那么只有被单击的提交字段才会出现在这个字典中
+# 当我们对表单类实例或特定的字段属性调用data属性时，WTForms会对数据做进一步处理。对于提交字段的值，它会将其转换为布尔值：被单击的提交字段的值将是True，未被单击的值则是False
+@app.route('/two-submits', methods=['GET', 'POST'])
+def two_submits():
+    form = NewPostForm()
+    if form.validate_on_submit():
+        if form.save.data: # 保存按钮被点击
+            # save it...
+            flash('You click the "Save" button!')
+        elif form.publish.data: # 发布按钮被点击
+            # publish it...
+            flash('You click the "Publish" button!')
+        return redirect(url_for('index'))
+    return render_template('2submit.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
