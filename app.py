@@ -8,7 +8,7 @@ import uuid
 import json
 import click
 import config
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm, SigninForm2, RegisterForm2
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -466,6 +466,7 @@ def two_submits():
         return redirect(url_for('index'))
     return render_template('2submit.html', form=form)
 
+# 多表单单视图
 @app.route('/multi-form', methods=['GET', 'POST'])
 def multi_form():
     signin_form = SigninForm()
@@ -482,6 +483,37 @@ def multi_form():
         return redirect(url_for('index'))
 
     return render_template('2form.html', signin_form=signin_form, register_form=register_form)
+
+# 多表单多视图
+# 该视图只负责处理GET请求
+@app.route('/multi-form-multi-view')
+def multi_form_multi_view():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+    return render_template('2form2view.html', signin_form=signin_form, register_form=register_form)
+
+# 使用单独的视图处理POST请求
+@app.route('/handle-signin', methods=['POST'])
+def handle_signin():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+
+    if signin_form.validate_on_submit():
+        username = signin_form.username.data
+        flash('%s, you just submit the Signin Form.' % username)
+        return redirect(url_for('index'))
+    return render_template('2form2view.html', signin_form=signin_form, register_form=register_form)
+
+@app.route('/handle-register', methods=['POST'])
+def handle_register():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+
+    if register_form.validate_on_submit():
+        username = register_form.username.data
+        flash('%s, you just submit the Register Form.' % username)
+        return redirect(url_for('index'))
+    return render_template('2form2view.html', signin_form=signin_form, register_form=register_form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],

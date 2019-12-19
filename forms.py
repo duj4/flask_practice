@@ -49,14 +49,27 @@ class NewPostForm(FlaskForm):
     save = SubmitField('Save') # 保存按钮
     publish = SubmitField('Publish') # 提交按钮
 
-# 单页面多表单-单视图
+# 多表单-单视图
+# 登录
 class SigninForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(1,20)])
     password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
     submit1 = SubmitField('Sign in')
-
+# 注册
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(1,20)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(1,254)])
     password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
     submit2 = SubmitField('Register')
+
+# 多表单-多试图
+class SigninForm2(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 24)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
+    submit = SubmitField()
+
+class RegisterForm2(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 24)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(1, 254)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
+    submit = SubmitField()
