@@ -4,7 +4,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import Form, StringField, PasswordField, BooleanField, IntegerField, SubmitField, MultipleFileField, TextAreaField
-from wtforms.validators import DataRequired, Length, ValidationError
+from wtforms.validators import DataRequired, Length, ValidationError, Email
 from flask_ckeditor import CKEditorField
 
 class LoginForm(FlaskForm):
@@ -48,3 +48,15 @@ class NewPostForm(FlaskForm):
     body = TextAreaField('Body', validators=[DataRequired()])
     save = SubmitField('Save') # 保存按钮
     publish = SubmitField('Publish') # 提交按钮
+
+# 单页面多表单-单视图
+class SigninForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1,20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
+    submit1 = SubmitField('Sign in')
+
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1,20)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(1,254)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
+    submit2 = SubmitField('Register')

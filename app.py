@@ -8,7 +8,7 @@ import uuid
 import json
 import click
 import config
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -465,6 +465,23 @@ def two_submits():
             flash('You click the "Publish" button!')
         return redirect(url_for('index'))
     return render_template('2submit.html', form=form)
+
+@app.route('/multi-form', methods=['GET', 'POST'])
+def multi_form():
+    signin_form = SigninForm()
+    register_form = RegisterForm()
+
+    if signin_form.submit1.data and signin_form.validate():
+        username = signin_form.username.data
+        flash('%s, you just submit the Signin Form.' % username)
+        return redirect(url_for('index'))
+
+    if register_form.submit2.data and register_form.validate():
+        username = register_form.username.data
+        flash('%s, you just submit the Register Form.' % username)
+        return redirect(url_for('index'))
+
+    return render_template('2form.html', signin_form=signin_form, register_form=register_form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
