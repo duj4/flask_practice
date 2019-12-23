@@ -1,5 +1,8 @@
 from flask import Flask, url_for, request, redirect, abort, make_response, jsonify, session, render_template, Markup, flash, send_from_directory
 from flask_wtf.csrf import validate_csrf
+from flask_wtf import FlaskForm
+from wtforms import TextAreaField, SubmitField
+from wtforms.validators import  DataRequired
 from flask_ckeditor import CKEditor, upload_success, upload_fail
 from urllib.parse import urlparse, urljoin
 from jinja2.utils import generate_lorem_ipsum
@@ -9,6 +12,7 @@ import json
 import click
 import config
 from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm, SigninForm2, RegisterForm2
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -18,6 +22,10 @@ app.secret_key = app.config['SECRET_KEY']
 
 # 实例化Flask-CKEditor提供的CKEditor类
 ckeditor = CKEditor(app)
+
+# 实例化SQLAlchemy类
+# SQLite的具体参数配置在config.py中
+db = SQLAlchemy(app)
 
 # 第一个视图函数
 # @app.route('/')
@@ -514,6 +522,33 @@ def handle_register():
         flash('%s, you just submit the Register Form.' % username)
         return redirect(url_for('index'))
     return render_template('2form2view.html', signin_form=signin_form, register_form=register_form)
+
+# 用来映射到数据库表的Python类通常被称为数据库模型(model), 一个数据库模型类对应数据库中的一个表
+# 所有的模型类都要继承Flask-SQLAlchemy提供的db.Model基类
+# Note类对应的表名即为note
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+
+class NewNoteForm(FlaskForm):
+    body = TextAreaField('Body', validators=[DataRequired()])
+    submit = SubmitField('Save')
+
+@app.route('/index_DB')
+def index_DB():
+    return render_template('index_DB.html')
+
+@app.route('/new_note', methods=['GET', 'POST'])
+def new_note():
+    form = NewNoteForm()
+    if form.validate_on_submit():
+        body = form.body.data
+        note = Note(body=body)
+        db.session.add(note)
+        db.session.commit()
+        flash("Your note is saved.")
+        return redirect(url_for('index_DB'))
+    return render_template('new_note.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],

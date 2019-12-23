@@ -1,0 +1,17 @@
+{% extends 'base_DB.html' %}
+{% from 'macros.html' import form_field %}
+
+{% block title %}
+    New Note
+{% endblock %}
+
+{% block content %}
+    <h2>New Note</h2>
+    <form method="post">
+        {{ form.csrf_token }}
+        <!--{{ form_field(form.body, row=5, cols=50) }}-->
+        {{ form.body.label}} <br>
+        {{ form.body(row=5,cols=50) }} <br>
+        {{ form.submit }}<br>
+    </form>
+{% endblock %}
