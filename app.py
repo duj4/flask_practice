@@ -584,6 +584,24 @@ def delete_note(note_id):
         abort(400)
     return redirect(url_for('index_DB'))
 
+# 一对多关系
+# Author类和Article类
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    phone = db.Column(db.String(20))
+    # 定义关系属性，在“一对多”的“一”侧定义
+    # relationship()函数的第一个参数为关系另一侧的模型名称，它会告诉SQLAlchemy将Author类鱼Article类建立关系
+    # 当这个关系属性被调用时，SQLAlchemy会找到关系另一侧（即article表）的外键字段（即author_id），然后反向查询article表中所有author_id值为当前主键值（即author.id）的记录，返回包含这些记录的列表，即返回某个作者对应的多篇文章记录
+    articles = db.relationship('Article')
+
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), index=True)
+    body = db.Column(db.Text)
+    # foreign key，在“一对多”的“多”侧定义
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
+
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
             host = app.config['HOST'],
