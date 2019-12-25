@@ -17,6 +17,7 @@
       <w>signin</w>
       <w>sqlalchemy</w>
       <w>totoro</w>
+      <w>uselist</w>
       <w>werkzeug</w>
     </words>
   </dictionary>

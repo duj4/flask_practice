@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="46fbcecc-b2a4-4a8c-a7c8-17eb4e385be2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/duj4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/duj4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -112,7 +113,7 @@
       <workItem from="1577080359392" duration="652000" />
       <workItem from="1577081041251" duration="8044000" />
       <workItem from="1577149557918" duration="13903000" />
-      <workItem from="1577237709925" duration="5046000" />
+      <workItem from="1577237709925" duration="9396000" />
     </task>
     <servers />
   </component>
@@ -193,10 +194,10 @@
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2577" y="257" width="606" height="526" key="find.popup/0.0.1920.1040/1920.0.1920.1040/3840.0.1080.1880@1920.0.1920.1040" timestamp="1577087825041" />
-    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1576735861283">
+    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1577246302174">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040/3840.0.1080.1880@1920.0.1920.1040" timestamp="1576735861283" />
+    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040/3840.0.1080.1880@1920.0.1920.1040" timestamp="1577246302174" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/flask_practice$app.coverage" NAME="app Coverage Results" MODIFIED="1577173813181" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

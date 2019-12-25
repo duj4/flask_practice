@@ -596,7 +596,7 @@ class Author(db.Model):
     # 定义关系属性，在“一对多”的“一”侧定义
     # relationship()函数的第一个参数为关系另一侧的模型名称，它会告诉SQLAlchemy将Author类鱼Article类建立关系
     # 当这个关系属性被调用时，SQLAlchemy会找到关系另一侧（即article表）的外键字段（即author_id），然后反向查询article表中所有author_id值为当前主键值（即author.id）的记录，返回包含这些记录的列表，即返回某个作者对应的多篇文章记录
-    # 可以用backref简化关系定义:
+    # 可以用backref简化关系定义,这会同时在Article中添加一个author标量属性
     # articles = db.relationship('Article', backref='author')
     articles = db.relationship('Article')
 
@@ -622,7 +622,48 @@ class Book(db.Model):
     # back_populates参数的值需要设为关系另一侧的关系属性名
     writer = db.relationship('Writer', back_populates='books')
 
+# 多对一
+class Citizen(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
+    city = db.relationship('City')
 
+class City(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+
+# 一对一
+# 一对一关系实际上是通过建立双向关系的一对多关系的基础上转化而来
+# 确保两侧都是标量属性，即都返回单个值，所以要在定义集合属性的关系函数中将uselist参数设为False
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    capital = db.relationship('Capital', uselist=False)
+
+# “多”这一侧本就是标量关系属性，不用做任何改动
+class Capital(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True)
+    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
+    country = db.relationship('Country')
+
+# 多对多
+association_table = db.Table('association',
+                             db.Column('student_id', db.Integer, db.ForeignKey('student.id')),
+                             db.Column('teacher_id', db.Integer, db.ForeignKey('teacher.id'))
+                             )
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    grade = db.Column(db.String(20))
+    teachers = db.relationship('Teacher', secondary=association_table, back_populates='students')
+
+class Teacher(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=True)
+    office = db.Column(db.String(20))
+    students = db.relationship('Student', secondary=association_table, back_populates='teachers')
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
