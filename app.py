@@ -13,6 +13,7 @@ import click
 import config
 from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm, SigninForm2, RegisterForm2
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -26,6 +27,9 @@ ckeditor = CKEditor(app)
 # 实例化SQLAlchemy类
 # SQLite的具体参数配置在config.py中
 db = SQLAlchemy(app)
+
+# 实例化Flask-Migrate提供的Migrate类，进行初始化
+migrate = Migrate(app, db)
 
 # 第一个视图函数
 # @app.route('/')
@@ -675,6 +679,22 @@ class Teacher(db.Model):
     name = db.Column(db.String(70), unique=True)
     office = db.Column(db.String(20))
     students = db.relationship('Student', secondary=association_table, back_populates='teachers')
+
+# Cascade
+# 操作一个对象的同时，对相关的对象也执行某些操作
+# a. save-update, merge(默认值，当cascade没有设置任何值时)，如果使用db.session.add()方法将Post对象添加到数据库会话时，那么Post相关联的Comment对象也会被添加到数据库会话
+# b. delete, 如果某个Post对象被删除，那么按照默认行为，该Post对象关联的所有Comment对象都将与这个Post对象取消关联，外键字段的值会被清空。设置cascade的值为delete时，这些相关的Comment会在关联的Post对象删除时被一并删除
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), unique=True)
+    body = db.Column(db.Text)
+    comments = db.relationship('Comment', back_populates='post')
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    post = db.relationship('Post', back_populates='comments')
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],

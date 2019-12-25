@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="46fbcecc-b2a4-4a8c-a7c8-17eb4e385be2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/duj4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/duj4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -39,7 +38,7 @@
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Console Font" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
   <component name="RunManager" selected="Python.app">
     <configuration name="html.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/flask_practice/templates/html.html" useBuiltInWebServerPort="true">
@@ -113,7 +112,8 @@
       <workItem from="1577080359392" duration="652000" />
       <workItem from="1577081041251" duration="8044000" />
       <workItem from="1577149557918" duration="13903000" />
-      <workItem from="1577237709925" duration="11328000" />
+      <workItem from="1577237709925" duration="11981000" />
+      <workItem from="1577259519352" duration="3900000" />
     </task>
     <servers />
   </component>
@@ -186,10 +186,11 @@
     <state width="1037" height="296" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1080.1880/3000.0.1080.1880@1920.0.1080.1880" timestamp="1576544205839" />
     <state width="1877" height="240" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040/3840.0.1080.1880@1920.0.1920.1040" timestamp="1577173813181" />
     <state width="1877" height="149" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576741886724" />
-    <state x="1961" y="581" key="SettingsEditor" timestamp="1576224038470">
-      <screen x="1920" y="0" width="1080" height="1880" />
+    <state x="2248" y="261" key="SettingsEditor" timestamp="1577259503984">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="1961" y="581" key="SettingsEditor/0.0.1920.1040/1920.0.1080.1880/3000.0.1080.1880@1920.0.1080.1880" timestamp="1576224038470" />
+    <state x="2248" y="261" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040/3840.0.1080.1880@1920.0.1920.1040" timestamp="1577259503984" />
     <state x="2577" y="257" width="606" height="526" key="find.popup" timestamp="1577087825041">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
