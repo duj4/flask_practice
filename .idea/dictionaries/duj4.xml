@@ -9,6 +9,7 @@
       <w>errorhandler</w>
       <w>goback</w>
       <w>gump</w>
+      <w>initdb</w>
       <w>jinja</w>
       <w>lstrip</w>
       <w>mimetype</w>
