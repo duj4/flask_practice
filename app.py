@@ -683,7 +683,8 @@ class Teacher(db.Model):
 # Cascade
 # 操作一个对象的同时，对相关的对象也执行某些操作
 # a. save-update, merge(默认值，当cascade没有设置任何值时)，如果使用db.session.add()方法将Post对象添加到数据库会话时，那么Post相关联的Comment对象也会被添加到数据库会话
-# b. delete, 如果某个Post对象被删除，那么按照默认行为，该Post对象关联的所有Comment对象都将与这个Post对象取消关联，外键字段的值会被清空。设置cascade的值为delete时，这些相关的Comment会在关联的Post对象删除时被一并删除
+# b. delete(cascade='all'), 如果某个Post对象被删除，那么按照默认行为，该Post对象关联的所有Comment对象都将与这个Post对象取消关联，外键字段的值会被清空。设置cascade的值为delete时，这些相关的Comment会在关联的Post对象删除时被一并删除
+# c. delete-orphan(cascade='all, delete-orphan'), 该模式基于delete级联，除了delete的行为之外，当某个Post对象与某个Comment对象解除关系时，也会删除该Comment对象，这个解除关系的对象被称为孤立对象
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), unique=True)
@@ -695,6 +696,18 @@ class Comment(db.Model):
     body = db.Column(db.Text)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     post = db.relationship('Post', back_populates='comments')
+
+# 事件监听
+class Draft(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    edit_time = db.Column(db.Integer, default=0)
+
+# listens_for装饰器主要接收两个参数：target表示监听对象，identifier表示被监听事件的标识符，例如set, append, remove, init_scalar, init_collection等
+@db.event.listens_for(Draft.body, 'set')
+def increment_edit_time(target, value, oldvalue, initiator):
+    if target.edit_time is not None:
+        target.edit_time += 1
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
