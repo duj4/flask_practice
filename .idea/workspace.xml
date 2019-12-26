@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="46fbcecc-b2a4-4a8c-a7c8-17eb4e385be2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/duj4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/duj4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +115,8 @@
       <workItem from="1577081041251" duration="8044000" />
       <workItem from="1577149557918" duration="13903000" />
       <workItem from="1577237709925" duration="11981000" />
-      <workItem from="1577259519352" duration="7069000" />
+      <workItem from="1577259519352" duration="7739000" />
+      <workItem from="1577328608697" duration="4240000" />
     </task>
     <servers />
   </component>

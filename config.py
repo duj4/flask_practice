@@ -11,3 +11,10 @@ CKEDITOR_SERVE_LOCAL = True
 SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:////' + os.path.join(os.path.dirname(os.path.abspath('app.py')), 'data.db'))
 # 这个配置变量决定是否追踪对象的修改，这用于Flask-SQLAlchemy的事件通知系统，默认值为None，如果没有特殊需要，可以将其改为False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+MAIL_SERVER = 'smtp.qq.com'
+# MAIL_PORT = 587
+# MAIL_USE_TLS = True
+MAIL_PORT = 465
+MAIL_USE_SSL = True
+MAIL_USERNAME = '328185556@qq.com'
+MAIL_PASSWORD = 'rjzbbveckocjcacj'

@@ -14,6 +14,7 @@ import config
 from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm, SigninForm2, RegisterForm2
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -30,6 +31,9 @@ db = SQLAlchemy(app)
 
 # 实例化Flask-Migrate提供的Migrate类，进行初始化
 migrate = Migrate(app, db)
+
+# 实例化Mail类
+mail = Mail(app)
 
 # 第一个视图函数
 # @app.route('/')
