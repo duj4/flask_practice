@@ -73,3 +73,9 @@ class RegisterForm2(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email(), Length(1, 254)])
     password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
     submit = SubmitField()
+
+# subscribe form
+class SubscribeForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Subscribe')

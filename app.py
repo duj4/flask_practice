@@ -11,10 +11,10 @@ import uuid
 import json
 import click
 import config
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm, SigninForm2, RegisterForm2
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm, SigninForm2, RegisterForm2, SubscribeForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_mail import Mail
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -712,6 +712,22 @@ class Draft(db.Model):
 def increment_edit_time(target, value, oldvalue, initiator):
     if target.edit_time is not None:
         target.edit_time += 1
+
+# email
+# 通用发信函数
+def send_email(subject, to, body):
+    message = Message(subject, recipients=[to], body=body)
+    mail.send(message)
+
+@app.route('/subscribe', methods=['GET', 'POST'])
+def subscribe():
+    form = SubscribeForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        flash('Welcome on board!')
+        send_email('Subscribe Success!', email, 'Hello, thank you for subscribing Flask Weekly!')
+        return 'Subscribe Success!'
+    return render_template('subscribe.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug = app.config['DEBUG'],
